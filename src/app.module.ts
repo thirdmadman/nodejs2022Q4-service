@@ -1,3 +1,5 @@
+import { ArtistsService } from './artists/artists.service';
+import { ArtistsController } from './artists/artists.controller';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { Module } from '@nestjs/common';
@@ -15,7 +17,7 @@ import { UsersModule } from './users/users.module';
     TracksModule,
     UsersModule,
   ],
-  controllers: [UsersController],
-  providers: [UsersService],
+  controllers: [UsersController, ArtistsController],
+  providers: [UsersService, ArtistsService],
 })
 export class AppModule {}
