@@ -47,7 +47,7 @@ export class GenericRepository<TEntity extends GenericEntity> {
     const table = db[this.tableName] as Array<TEntity>;
     const index = table.findIndex((entityToFind) => entityToFind.id === id);
     if (index > -1) {
-      const newEntity: TEntity = { ...entity };
+      const newEntity: TEntity = { ...entity, id };
       table[index] = newEntity;
       return { ...table[index] };
     }
