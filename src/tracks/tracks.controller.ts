@@ -11,13 +11,14 @@ import {
   HttpCode,
   ParseUUIDPipe,
   NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { throwException } from 'src/utils/helpers';
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('tracks')
+@Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
@@ -43,7 +44,15 @@ export class TracksController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    return this.tracksService.update(id, updateTrackDto);
+    const resultObj = this.tracksService.update(id, updateTrackDto);
+    if (!resultObj) {
+      throw new InternalServerErrorException();
+    }
+    if (!resultObj.entity) {
+      throw new NotFoundException();
+    }
+
+    return resultObj.entity;
   }
 
   @Delete(':id')
