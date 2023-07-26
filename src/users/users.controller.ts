@@ -14,6 +14,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { throwException } from 'src/utils/helpers';
 
 @Controller('users')
 export class UsersController {
@@ -34,7 +35,9 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findOne(id) || new NotFoundException();
+    return (
+      this.usersService.findOne(id) ?? throwException(new NotFoundException())
+    );
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
