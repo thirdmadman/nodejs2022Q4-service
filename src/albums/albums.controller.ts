@@ -11,13 +11,14 @@ import {
   HttpCode,
   ParseUUIDPipe,
   NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { throwException } from 'src/utils/helpers';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 @UseInterceptors(ClassSerializerInterceptor)
-@Controller('albums')
+@Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
@@ -43,7 +44,15 @@ export class AlbumsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    return this.albumsService.update(id, updateAlbumDto);
+    const resultObj = this.albumsService.update(id, updateAlbumDto);
+    if (!resultObj) {
+      throw new InternalServerErrorException();
+    }
+    if (!resultObj.entity) {
+      throw new NotFoundException();
+    }
+
+    return resultObj.entity;
   }
 
   @Delete(':id')
