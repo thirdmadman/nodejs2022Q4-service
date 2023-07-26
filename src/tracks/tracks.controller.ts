@@ -6,11 +6,13 @@ import {
   Put,
   Param,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('tracks')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}

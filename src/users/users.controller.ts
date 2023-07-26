@@ -19,23 +19,21 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { throwException } from 'src/utils/helpers';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return (
@@ -43,7 +41,6 @@ export class UsersController {
     );
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -63,7 +60,6 @@ export class UsersController {
     return resultObj.entity;
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
