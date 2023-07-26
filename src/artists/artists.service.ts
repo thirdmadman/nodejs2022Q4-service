@@ -1,26 +1,48 @@
+import { artistRepository } from './artist.repository';
 import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { ArtistEntity } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistsService {
   create(createArtistDto: CreateArtistDto) {
-    return 'This action adds a new artist';
+    const artist = artistRepository.create({
+      ...createArtistDto,
+      id: '',
+    });
+    if (!artist) return null;
+    return new ArtistEntity(artist);
   }
 
   findAll() {
-    return `This action returns all artists`;
+    return artistRepository.findAll().map((src) => {
+      if (!src) return null;
+      return new ArtistEntity(src);
+    });
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} artist`;
+    const artist = artistRepository.findOne(id);
+    if (!artist) return null;
+    return new ArtistEntity(artist);
   }
 
   update(id: string, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} artist`;
+    const artist = artistRepository.findOne(id);
+    if (!artist) return { entity: null };
+    const updatedUser = artistRepository.update(id, {
+      ...artist,
+      grammy: updateArtistDto.grammy,
+      name: updateArtistDto.name,
+    });
+    if (!updatedUser) return null;
+    return { entity: new ArtistEntity(updatedUser) };
   }
 
   remove(id: string) {
-    return `This action removes a #${id} artist`;
+    const artist = artistRepository.delete(id);
+    if (!artist) return null;
+    return new ArtistEntity(artist);
   }
 }
