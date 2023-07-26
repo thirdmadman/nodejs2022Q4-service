@@ -1,7 +1,7 @@
-import { Favorite } from './../favorites/entities/favorite.entity';
-import { Track } from './../tracks/entities/track.entity';
-import { Album } from './../albums/entities/album.entity';
-import { Artist } from './../artists/entities/artist.entity';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
+import { Album } from 'src/interfaces/album.interface';
+import { Artist } from 'src/interfaces/artist.interface';
+import { Track } from 'src/interfaces/track.interface';
 import { User } from 'src/interfaces/user.interface';
 
 export interface DB {
