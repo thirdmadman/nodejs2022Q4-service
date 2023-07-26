@@ -1,4 +1,6 @@
-export interface Album {
+import { GenericEntity } from 'src/generics/generic.entity';
+
+export interface Album extends GenericEntity {
   id: string; // uuid v4
   name: string;
   year: number;

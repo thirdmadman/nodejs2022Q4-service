@@ -1,4 +1,6 @@
-export interface User {
+import { GenericEntity } from 'src/generics/generic.entity';
+
+export interface User extends GenericEntity {
   id: string; // uuid v4
   login: string;
   password: string;
