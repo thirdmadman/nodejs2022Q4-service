@@ -27,16 +27,16 @@ export class AlbumsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.albumsService.findOne(+id);
+    return this.albumsService.findOne(id);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
-    return this.albumsService.update(+id, updateAlbumDto);
+    return this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.albumsService.remove(+id);
+    return this.albumsService.remove(id);
   }
 }

@@ -27,16 +27,16 @@ export class TracksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.tracksService.findOne(+id);
+    return this.tracksService.findOne(id);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
-    return this.tracksService.update(+id, updateTrackDto);
+    return this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.tracksService.remove(+id);
+    return this.tracksService.remove(id);
   }
 }
