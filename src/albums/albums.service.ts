@@ -1,26 +1,50 @@
+import { albumRepository } from './album.repository';
 import { Injectable } from '@nestjs/common';
+import { Album } from 'src/interfaces/album.interface';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { AlbumEntity } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsService {
   create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+    const newAlbum: Album = {
+      id: '',
+      name: createAlbumDto.name,
+      artistId: createAlbumDto.artistId,
+      year: createAlbumDto.year,
+    };
+    const album = albumRepository.create(newAlbum);
+    if (!album) return null;
+    return new AlbumEntity(album);
   }
 
   findAll() {
-    return `This action returns all albums`;
+    return albumRepository.findAll();
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} album`;
+    const album = albumRepository.findOne(id);
+    if (!album) return null;
+    return new AlbumEntity(album);
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+    const album = albumRepository.findOne(id);
+    if (!album) return { entity: null };
+    const updatedAlbum = albumRepository.update(id, {
+      id: '',
+      name: updateAlbumDto.name,
+      artistId: updateAlbumDto.artistId,
+      year: updateAlbumDto.year,
+    });
+    if (!updatedAlbum) return null;
+    return { entity: new AlbumEntity(updatedAlbum) };
   }
 
   remove(id: string) {
-    return `This action removes a #${id} album`;
+    const album = albumRepository.delete(id);
+    if (!album) return null;
+    return new AlbumEntity(album);
   }
 }
