@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
@@ -11,13 +10,16 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   Put,
+  InternalServerErrorException,
+  ForbiddenException,
+  HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { throwException } from 'src/utils/helpers';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -47,11 +49,23 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(id, updateUserDto);
+    const resultObj = this.usersService.update(id, updateUserDto);
+    if (!resultObj) {
+      throw new InternalServerErrorException();
+    }
+    if (resultObj.isPasswordMismatch) {
+      throw new ForbiddenException();
+    }
+    if (!resultObj.entity) {
+      throw new NotFoundException();
+    }
+
+    return resultObj.entity;
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return (
       this.usersService.remove(id) ?? throwException(new NotFoundException())
