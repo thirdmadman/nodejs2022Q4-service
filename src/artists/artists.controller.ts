@@ -10,7 +10,10 @@ import {
   UseInterceptors,
   HttpCode,
   ParseUUIDPipe,
+  NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
+import { throwException } from 'src/utils/helpers';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -31,7 +34,9 @@ export class ArtistsController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistsService.findOne(id);
+    return (
+      this.artistsService.findOne(id) ?? throwException(new NotFoundException())
+    );
   }
 
   @Put(':id')
@@ -39,12 +44,22 @@ export class ArtistsController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    return this.artistsService.update(id, updateArtistDto);
+    const resultObj = this.artistsService.update(id, updateArtistDto);
+    if (!resultObj) {
+      throw new InternalServerErrorException();
+    }
+    if (!resultObj.entity) {
+      throw new NotFoundException();
+    }
+
+    return resultObj.entity;
   }
 
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistsService.remove(id);
+    return (
+      this.artistsService.remove(id) ?? throwException(new NotFoundException())
+    );
   }
 }
