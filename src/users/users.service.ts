@@ -47,7 +47,7 @@ export class UsersService {
       version: user.version + 1,
       updatedAt: Date.now(),
     });
-    if (!user) return null;
+    if (!updatedUser) return null;
     return { entity: new UserEntity(updatedUser) };
   }
 
