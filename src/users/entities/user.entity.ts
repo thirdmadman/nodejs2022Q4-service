@@ -12,7 +12,6 @@ export class UserEntity {
   updatedAt: number; // timestamp of last update
 
   constructor(partial: Partial<UserEntity>) {
-    if (!UserEntity) return null;
     Object.assign(this, partial);
   }
 }
