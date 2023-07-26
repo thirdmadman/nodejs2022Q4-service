@@ -8,13 +8,14 @@ import { userRepository } from './users.repository';
 @Injectable()
 export class UsersService {
   create(createUserDto: CreateUserDto) {
+    const currentTimestamp = Date.now();
     const newUser: User = {
       id: '',
       login: createUserDto.login,
       password: createUserDto.password,
-      version: 0,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      version: 1,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     const user = userRepository.create(newUser);
     if (!user) return null;
@@ -35,7 +36,19 @@ export class UsersService {
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    const user = userRepository.findOne(id);
+    if (!user) return { entity: null };
+    if (user.password !== updateUserDto.oldPassword) {
+      return { isPasswordMismatch: true };
+    }
+    const updatedUser = userRepository.update(id, {
+      ...user,
+      password: updateUserDto.newPassword,
+      version: user.version + 1,
+      updatedAt: Date.now(),
+    });
+    if (!user) return null;
+    return { entity: new UserEntity(updatedUser) };
   }
 
   remove(id: string) {
