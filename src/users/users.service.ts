@@ -16,15 +16,22 @@ export class UsersService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    return new UserEntity(userRepository.create(newUser));
+    const user = userRepository.create(newUser);
+    if (!user) return null;
+    return new UserEntity(user);
   }
 
   findAll() {
-    return userRepository.findAll().map((src) => new UserEntity(src));
+    return userRepository.findAll().map((src) => {
+      if (!src) return null;
+      return new UserEntity(src);
+    });
   }
 
   findOne(id: string) {
-    return new UserEntity(userRepository.findOne(id));
+    const user = userRepository.findOne(id);
+    if (!user) return null;
+    return new UserEntity(user);
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
@@ -32,6 +39,8 @@ export class UsersService {
   }
 
   remove(id: string) {
-    return `This action removes a #${id} user`;
+    const user = userRepository.delete(id);
+    if (!user) return null;
+    return new UserEntity(user);
   }
 }
