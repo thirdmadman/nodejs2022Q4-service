@@ -10,7 +10,9 @@ import {
   ClassSerializerInterceptor,
   HttpCode,
   ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
+import { throwException } from 'src/utils/helpers';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -31,7 +33,9 @@ export class AlbumsController {
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumsService.findOne(id);
+    return (
+      this.albumsService.findOne(id) ?? throwException(new NotFoundException())
+    );
   }
 
   @Put(':id')
@@ -45,6 +49,8 @@ export class AlbumsController {
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumsService.remove(id);
+    return (
+      this.albumsService.remove(id) ?? throwException(new NotFoundException())
+    );
   }
 }
