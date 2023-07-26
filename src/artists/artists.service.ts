@@ -1,8 +1,10 @@
+import { albumRepository } from './../albums/album.repository';
 import { artistRepository } from './artist.repository';
 import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from './entities/artist.entity';
+import { trackRepository } from 'src/tracks/track.repository';
 
 @Injectable()
 export class ArtistsService {
@@ -41,6 +43,8 @@ export class ArtistsService {
   }
 
   remove(id: string) {
+    trackRepository.breakAllLinksTrackToArtist(id);
+    albumRepository.breakAllLinksArtistToAlbum(id);
     const artist = artistRepository.delete(id);
     if (!artist) return null;
     return new ArtistEntity(artist);

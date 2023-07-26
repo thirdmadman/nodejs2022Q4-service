@@ -1,3 +1,4 @@
+import { trackRepository } from './../tracks/track.repository';
 import { albumRepository } from './album.repository';
 import { Injectable } from '@nestjs/common';
 import { Album } from 'src/interfaces/album.interface';
@@ -43,6 +44,7 @@ export class AlbumsService {
   }
 
   remove(id: string) {
+    trackRepository.breakAllLinksTrackToAlbum(id);
     const album = albumRepository.delete(id);
     if (!album) return null;
     return new AlbumEntity(album);
