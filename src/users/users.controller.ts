@@ -10,6 +10,7 @@ import {
   ClassSerializerInterceptor,
   ParseUUIDPipe,
   NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -41,7 +42,7 @@ export class UsersController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -52,6 +53,8 @@ export class UsersController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.remove(id);
+    return (
+      this.usersService.remove(id) ?? throwException(new NotFoundException())
+    );
   }
 }
