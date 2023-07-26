@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -30,7 +30,7 @@ export class AlbumsController {
     return this.albumsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
     return this.albumsService.update(+id, updateAlbumDto);
   }
