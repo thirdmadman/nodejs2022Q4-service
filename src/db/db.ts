@@ -1,4 +1,4 @@
-import { Favorite } from 'src/favorites/entities/favorite.entity';
+import { Favorite } from 'src/interfaces/favorite.interface';
 import { Album } from 'src/interfaces/album.interface';
 import { Artist } from 'src/interfaces/artist.interface';
 import { Track } from 'src/interfaces/track.interface';
