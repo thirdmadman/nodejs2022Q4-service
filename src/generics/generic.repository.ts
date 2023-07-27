@@ -1,8 +1,12 @@
-import { GenericEntity } from 'src/generics/generic.entity';
 import { v4 } from 'uuid';
 import { DB, db } from '../db/db';
 
-export class GenericRepository<TEntity extends GenericEntity> {
+type Keys = keyof DB;
+type ExtractArrayType<T> = T extends Array<infer U> ? U : never;
+type DBArrays = typeof db[Keys];
+type ExtractedType = ExtractArrayType<DBArrays>;
+
+export class GenericRepository<TEntity extends ExtractedType> {
   private tableName: keyof DB;
 
   constructor(tableName: keyof DB) {
