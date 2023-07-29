@@ -19,7 +19,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const yamlString = stringify(document, {});
-  const outputPath = resolve(process.cwd(), 'api.yaml');
+  const outputPath = resolve(process.cwd(), 'doc/api.yaml');
   writeFileSync(outputPath, yamlString, { encoding: 'utf8' });
 
   await app.listen(PORT);
