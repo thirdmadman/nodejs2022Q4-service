@@ -3,7 +3,7 @@ import { DB, db } from '../db/db';
 
 type Keys = keyof DB;
 type ExtractArrayType<T> = T extends Array<infer U> ? U : never;
-type DBArrays = typeof db[Keys];
+type DBArrays = (typeof db)[Keys];
 type ExtractedType = ExtractArrayType<DBArrays>;
 
 export class GenericRepository<TEntity extends ExtractedType> {
