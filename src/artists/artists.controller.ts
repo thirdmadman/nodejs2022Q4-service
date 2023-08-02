@@ -62,7 +62,7 @@ export class ArtistsController {
     summary: 'Get single artist by id',
     description: 'Get single artist by id',
   })
-  @ApiOkResponse({ description: 'Successful operation', type: ArtistEntity }) // Assuming CreateArtistDto is the same as Artist schema
+  @ApiOkResponse({ description: 'Successful operation', type: ArtistEntity })
   @ApiNotFoundResponse({ description: 'Artist was not found.' })
   @ApiBadRequestResponse({
     description: 'Bad request. artistId is invalid (not UUID)',
