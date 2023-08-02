@@ -35,6 +35,18 @@ After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
+```
+docker compose -f docker-compose.dev.yaml up --build --force-recreate
+```
+
+To run app by docker in dev mode run this command.
+
+```
+docker compose -f docker-compose.yaml up --build --force-recreate
+```
+
+To run app by docker in production mode run this command.
+
 ## Testing
 
 After application running open new terminal and enter:
