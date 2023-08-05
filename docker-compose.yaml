@@ -3,31 +3,34 @@ version: '3.1'
 services:
 
   postgres:
-    image: postgres:18-alpine
+    image: postgres:alpine
     restart: on-failure
     networks:
       - postgres
-    environment:
-      POSTGRES_USER: todoapp
-      POSTGRES_DB: todos
-      POSTGRES_PASSWORD: root
+    env_file: .env
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres_logs:/logs
 
   web:
+    env_file: .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL_DOCKER}
     build: 
       dockerfile: ./.docker/node.dockerfile
-    command: npm run start:prod
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npx prisma migrate deploy
+        npm run start:prod
     volumes:
-      - app-dist:/usr/app/dist
+      - app-dist:/usr/app/dist/
       - node_modules:/usr/app/node_modules
     ports:
       - "4000:4000"
     depends_on:
       - postgres
-    environment:
-      DATABASE_URL: postgres://todoapp@postgres/todos
     networks:
       - postgres
 
