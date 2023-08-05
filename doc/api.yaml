@@ -585,7 +585,7 @@ paths:
           description: User not found
       tags: *a5
 info:
-  title: Home Library
+  title: The Home Library
   description: Home Library basic REST API
   version: "1.0"
   contact: {}
