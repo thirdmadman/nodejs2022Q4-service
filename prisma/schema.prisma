@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native","linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -11,53 +12,79 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  login     String
-  password  String
-  version   Int        @default(0)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  favorites Favorite[]
+  id              String           @id @default(uuid())
+  login           String
+  password        String
+  version         Int              @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  favoriteTracks  FavoriteTrack[]
+  davoriteAlbums  FavoriteAlbum[]
+  favoriteArtists FavoriteArtist[]
 }
 
 model Artist {
-  id        String     @id @default(uuid())
-  name      String
-  grammy    Boolean    @default(false)
-  tracks    Track[]
-  albums    Album[]
-  favorites Favorite[]
+  id              String           @id @default(uuid())
+  name            String
+  grammy          Boolean          @default(false)
+  tracks          Track[]
+  albums          Album[]
+  favoriteArtists FavoriteArtist[]
 }
 
 model Album {
-  id        String     @id @default(uuid())
-  name      String
-  artist    Artist?    @relation(fields: [artistId], references: [id])
-  artistId  String?    @unique
-  year      Int
-  tracks    Track[]
-  favorites Favorite[]
+  id             String          @id @default(uuid())
+  name           String
+  artist         Artist?         @relation(fields: [artistId], references: [id])
+  artistId       String?         @unique
+  year           Int
+  tracks         Track[]
+  favoriteAlbums FavoriteAlbum[]
 }
 
 model Track {
-  id        String     @id @default(uuid())
-  name      String
-  artist    Artist?    @relation(fields: [artistId], references: [id])
-  artistId  String?    @unique
-  album     Album?     @relation(fields: [albumId], references: [id])
-  albumId   String?    @unique
-  duration  Float      @default(0)
-  favorites Favorite[]
+  id             String          @id @default(uuid())
+  name           String
+  artist         Artist?         @relation(fields: [artistId], references: [id])
+  artistId       String?         @unique
+  album          Album?          @relation(fields: [albumId], references: [id])
+  albumId        String?         @unique
+  duration       Float           @default(0)
+  favoriteTracks FavoriteTrack[]
 }
 
-model Favorite {
-  id       String  @id @default(uuid())
-  user     User    @relation(fields: [userId], references: [id])
-  userId   String  @unique
-  artist   Artist? @relation(fields: [artistId], references: [id])
-  artistId String? @unique
-  album    Album?  @relation(fields: [albumId], references: [id])
-  albumId  String? @unique
-  track    Track?  @relation(fields: [trackId], references: [id])
-  trackId  String? @unique
+model FavoriteTrack {
+  id      String  @id @default(uuid())
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String?
+  track   Track   @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId String
 }
+
+model FavoriteAlbum {
+  id      String  @id @default(uuid())
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String?
+  album   Album   @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  albumId String
+}
+
+model FavoriteArtist {
+  id       String  @id @default(uuid())
+  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String?
+  artist   Artist  @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  artistId String
+}
+
+// model Favorite {
+//   id       String  @id @default(uuid())
+//   user     User?   @relation(fields: [userId], references: [id])
+//   userId   String?
+//   artist   Artist? @relation(fields: [artistId], references: [id])
+//   artistId String?
+//   album    Album?  @relation(fields: [albumId], references: [id])
+//   albumId  String?
+//   track    Track?  @relation(fields: [trackId], references: [id])
+//   trackId  String?
+// }
