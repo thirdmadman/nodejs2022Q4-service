@@ -35,6 +35,7 @@ services:
       - postgres
     networks:
       - postgres
+    restart: on-failure
 
 volumes:
   postgres-data:
