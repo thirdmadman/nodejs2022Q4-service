@@ -47,7 +47,7 @@ export class TracksController {
     description: 'Bad request. Body does not contain required fields',
   })
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
+  async create(@Body() createTrackDto: CreateTrackDto) {
     return this.tracksService.create(createTrackDto);
   }
 
@@ -60,7 +60,7 @@ export class TracksController {
     type: [TrackEntity],
   })
   @Get()
-  findAll() {
+  async findAll() {
     return this.tracksService.findAll();
   }
 
@@ -80,10 +80,9 @@ export class TracksController {
     format: 'uuid',
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.tracksService.findOne(id) ?? throwException(new NotFoundException())
-    );
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.tracksService.findOne(id);
+    return entity ?? throwException(new NotFoundException());
   }
 
   @ApiOperation({
@@ -105,11 +104,11 @@ export class TracksController {
     format: 'uuid',
   })
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    const resultObj = this.tracksService.update(id, updateTrackDto);
+    const resultObj = await this.tracksService.update(id, updateTrackDto);
     if (!resultObj) {
       throw new InternalServerErrorException();
     }
@@ -137,9 +136,8 @@ export class TracksController {
   })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.tracksService.remove(id) ?? throwException(new NotFoundException())
-    );
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.tracksService.remove(id);
+    return entity ?? throwException(new NotFoundException());
   }
 }

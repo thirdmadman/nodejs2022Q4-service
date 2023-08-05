@@ -44,7 +44,7 @@ export class ArtistsController {
     description: 'Bad request. Body does not contain required fields',
   })
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
+  async create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
 
@@ -54,7 +54,7 @@ export class ArtistsController {
     type: [ArtistEntity],
   })
   @Get()
-  findAll() {
+  async findAll() {
     return this.artistsService.findAll();
   }
 
@@ -74,10 +74,9 @@ export class ArtistsController {
     format: 'uuid',
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.artistsService.findOne(id) ?? throwException(new NotFoundException())
-    );
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.artistsService.findOne(id);
+    return entity ?? throwException(new NotFoundException());
   }
 
   @ApiOperation({
@@ -99,11 +98,11 @@ export class ArtistsController {
     format: 'uuid',
   })
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    const resultObj = this.artistsService.update(id, updateArtistDto);
+    const resultObj = await this.artistsService.update(id, updateArtistDto);
     if (!resultObj) {
       throw new InternalServerErrorException();
     }
@@ -131,9 +130,8 @@ export class ArtistsController {
   })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.artistsService.remove(id) ?? throwException(new NotFoundException())
-    );
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.artistsService.remove(id);
+    return entity ?? throwException(new NotFoundException());
   }
 }

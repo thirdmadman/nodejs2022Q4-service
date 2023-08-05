@@ -50,7 +50,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users', description: 'Gets all users' })
   @ApiOkResponse({ description: 'Successful operation', type: [UserEntity] })
   @Get()
-  findAll() {
+  async findAll() {
     return this.usersService.findAll();
   }
 
@@ -70,11 +70,9 @@ export class UsersController {
     format: 'uuid',
   })
   @Get(':userId')
-  findOne(@Param('userId', ParseUUIDPipe) userId: string) {
-    return (
-      this.usersService.findOne(userId) ??
-      throwException(new NotFoundException())
-    );
+  async findOne(@Param('userId', ParseUUIDPipe) userId: string) {
+    const entity = await this.usersService.findOne(userId);
+    return entity ?? throwException(new NotFoundException());
   }
 
   @ApiOperation({
@@ -97,11 +95,11 @@ export class UsersController {
     format: 'uuid',
   })
   @Put(':userId')
-  update(
+  async update(
     @Param('userId', ParseUUIDPipe) userId: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    const resultObj = this.usersService.update(userId, updateUserDto);
+    const resultObj = await this.usersService.update(userId, updateUserDto);
     if (!resultObj) {
       throw new InternalServerErrorException();
     }
@@ -129,10 +127,8 @@ export class UsersController {
   })
   @Delete(':userId')
   @HttpCode(204)
-  remove(@Param('userId', ParseUUIDPipe) userId: string) {
-    return (
-      this.usersService.remove(userId) ??
-      throwException(new NotFoundException())
-    );
+  async remove(@Param('userId', ParseUUIDPipe) userId: string) {
+    const entity = await this.usersService.remove(userId);
+    return entity ?? throwException(new NotFoundException());
   }
 }
