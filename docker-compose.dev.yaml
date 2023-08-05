@@ -15,17 +15,24 @@ services:
       - "5432:5432"
 
   web:
+    env_file: .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL_DOCKER}
     build: 
       dockerfile: ./.docker/node.dockerfile
       target: install
-    command: npm run start:dev
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npx prisma migrate deploy
+        npm run start:dev
     volumes:
       - ./src:/usr/app/src
     ports:
       - "4000:4000"
     depends_on:
       - postgres
-    env_file: .env
     networks:
       - postgres
 
