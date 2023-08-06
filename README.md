@@ -36,12 +36,14 @@ in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ```
+docker compose -f docker-compose.dev.yaml down
 docker compose -f docker-compose.dev.yaml up --build --force-recreate
 ```
 
 To run app by docker in dev mode run this command.
 
 ```
+docker compose -f docker-compose.yaml down
 docker compose -f docker-compose.yaml up --build --force-recreate
 ```
 
