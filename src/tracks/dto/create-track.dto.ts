@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
 
@@ -16,11 +17,13 @@ export class CreateTrackDto {
   @ApiProperty({ nullable: true, format: 'UUID' })
   @IsString()
   @IsOptional()
+  @IsUUID('4')
   artistId: string | null; // refers to Artist
 
   @ApiProperty({ nullable: true, format: 'UUID' })
   @IsString()
   @IsOptional()
+  @IsUUID('4')
   albumId: string | null; // refers to Album
 
   @ApiProperty({ example: '262' })

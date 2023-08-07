@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
 
@@ -21,5 +22,6 @@ export class CreateAlbumDto {
   @ApiProperty({ nullable: true, format: 'UUID' })
   @IsString()
   @IsOptional()
+  @IsUUID('4')
   artistId: string | null; // refers to Artist
 }
