@@ -6,8 +6,11 @@ import { PORT } from './common/config';
 import { stringify } from 'yaml';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
+  const logger = new Logger('Startup');
+  logger.log(`App is starting at port ${PORT}`);
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   const options = new DocumentBuilder()
@@ -28,7 +31,6 @@ async function bootstrap() {
   } catch (e) {
     console.error(e);
   }
-
   await app.listen(PORT);
 }
 bootstrap();
