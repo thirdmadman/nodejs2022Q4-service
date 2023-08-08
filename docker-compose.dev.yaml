@@ -3,6 +3,8 @@ version: '3.1'
 services:
 
   postgres:
+    container_name: nodejs2023Q2-service-postgres
+    image: thirdmadman/nodejs2023q2-service-postgres-dev
     build: 
       dockerfile: ./.docker/postgres.dockerfile
     restart: on-failure
@@ -13,9 +15,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - postgres_logs:/logs
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
 
   web:
+    container_name: nodejs2023Q2-service-app
+    image: thirdmadman/nodejs2023q2-service-app-dev
     env_file: .env
     environment:
       - DATABASE_URL=${DATABASE_URL_DOCKER}
@@ -30,8 +34,9 @@ services:
         npm run start:dev
     volumes:
       - ./src:/usr/app/src
+      - node_modules_dev:/usr/app/node_modules
     ports:
-      - "4000:4000"
+      - "${PORT}:${PORT}"
     depends_on:
       - postgres
     networks:
@@ -41,7 +46,7 @@ services:
 volumes:
   postgres-data:
   postgres_logs:
-  node_modules:
+  node_modules_dev:
 
 networks:
   postgres:
