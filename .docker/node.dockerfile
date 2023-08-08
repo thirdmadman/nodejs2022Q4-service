@@ -1,8 +1,7 @@
 FROM node:18-alpine as install
 WORKDIR /usr/app
 COPY ../ .
-RUN npm i --no-progress --quiet
-RUN npx prisma generate
+RUN npm ci --no-progress --quiet && npx prisma generate && npm prune
 
 FROM install as build
 RUN npm run prebuild
