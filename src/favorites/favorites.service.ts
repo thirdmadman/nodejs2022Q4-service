@@ -3,7 +3,7 @@ import { ArtistEntity } from 'src/artists/entities/artist.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
 import { TrackEntity } from 'src/tracks/entities/track.entity';
 import { FavoriteEntity } from './entities/favorite.entity';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class FavoritesService {
@@ -16,7 +16,7 @@ export class FavoritesService {
   //   ],
   // });
 
-  prisma = new PrismaClient();
+  constructor(private readonly prisma: PrismaService) {}
 
   // constructor() {
   //   this.prisma.$on('query', async (e) => {

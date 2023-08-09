@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { AlbumEntity } from './entities/album.entity';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class AlbumsService {
-  prisma = new PrismaClient();
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
     const album = await this.prisma.album.create({ data: createAlbumDto });

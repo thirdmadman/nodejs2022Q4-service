@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from './entities/artist.entity';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class ArtistsService {
-  prisma = new PrismaClient();
+  constructor(private readonly prisma: PrismaService) {}
+
   async create(createArtistDto: CreateArtistDto) {
     const artist = await this.prisma.artist.create({ data: createArtistDto });
     if (!artist) return null;

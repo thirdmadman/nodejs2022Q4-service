@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class TracksService {
-  prisma = new PrismaClient();
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createTrackDto: CreateTrackDto) {
     const track = await this.prisma.track.create({ data: createTrackDto });
