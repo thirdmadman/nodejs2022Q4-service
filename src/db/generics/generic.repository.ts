@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { DB, db } from '../db/db';
+import { DB, db } from '../db';
 
 type Keys = keyof DB;
 type ExtractArrayType<T> = T extends Array<infer U> ? U : never;
