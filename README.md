@@ -5,6 +5,10 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
+## Documentation
+You can find the documentation in the /docs directory.
+Also after installing and starting the app, Swagger will active on the /api route.
+
 ## Downloading
 
 ```
@@ -18,6 +22,10 @@ npm install
 ```
 
 ## Running application
+
+Rename existing ```.env.example``` to ```.env```
+
+Correct configuration to your preferences. If on ```.env``` file is provided, then default configuration will be used.
 
 ```
 npm start
