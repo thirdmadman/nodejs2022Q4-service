@@ -123,6 +123,16 @@ After build docker compose will send commends to container:
 
 After container started only app container will be exposed to the world on port used in .env file.
 
+## Vulnerabilities scanning
+
+You can scan images and npm packages for vulnerabilities with command ```npm run scan:dev``` or ```npm run scan:prod```
+
+Depending on current docker composer run you need to run corresponding command.
+
+```npm run scan:dev``` - for ```docker-compose.dev.yaml```
+
+```npm run scan:prod``` - for ```docker-compose.yaml```
+
 ## Testing
 
 After application running open new terminal and enter:
