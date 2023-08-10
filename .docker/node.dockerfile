@@ -4,8 +4,7 @@ COPY ../ .
 RUN npm ci --no-progress --quiet && npx prisma generate && npm prune
 
 FROM install as build
-RUN npm run prebuild
-RUN npm run build
+RUN npm run prebuild && npm run build && npm prune --production
 
 FROM node:18-alpine as production
 WORKDIR /usr/app
