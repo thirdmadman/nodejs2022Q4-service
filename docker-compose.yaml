@@ -7,7 +7,7 @@ services:
     image: thirdmadman/nodejs2023q2-service-postgres
     build: 
       dockerfile: ./.docker/postgres.dockerfile
-    restart: on-failure
+    restart: always
     networks:
       - postgres
     env_file: .env
@@ -39,7 +39,7 @@ services:
       - postgres
     networks:
       - postgres
-    restart: on-failure
+    restart: always
 
 volumes:
   postgres-data:
