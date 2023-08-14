@@ -9,15 +9,11 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    const currentTimestamp = new Date();
-
     const user = await this.prisma.user.create({
       data: {
         login: createUserDto.login,
         password: createUserDto.password,
         version: 1,
-        createdAt: currentTimestamp,
-        updatedAt: currentTimestamp,
       },
     });
     if (!user) return null;
@@ -64,7 +60,6 @@ export class UsersService {
       data: {
         password: updateUserDto.newPassword,
         version: user.version + 1,
-        updatedAt: new Date(),
       },
     });
     if (!updatedUser) return null;
