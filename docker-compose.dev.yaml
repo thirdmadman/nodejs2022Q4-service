@@ -16,6 +16,7 @@ services:
       - postgres_logs:/logs
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    command: postgres -c logging_collector=on -c log_destination=stderr -c log_directory=/logs
 
   web:
     container_name: nodejs2023Q2-service-app
