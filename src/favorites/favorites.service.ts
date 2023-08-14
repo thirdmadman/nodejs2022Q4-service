@@ -25,9 +25,15 @@ export class FavoritesService {
   // }
 
   async findAll() {
-    const favoriteAlbums = await this.prisma.favoriteAlbum.findMany();
-    const favoriteArtists = await this.prisma.favoriteArtist.findMany();
-    const favoriteTracks = await this.prisma.favoriteTrack.findMany();
+    const favoriteAlbums = await this.prisma.favoriteAlbum.findMany({
+      include: { album: true },
+    });
+    const favoriteArtists = await this.prisma.favoriteArtist.findMany({
+      include: { artist: true },
+    });
+    const favoriteTracks = await this.prisma.favoriteTrack.findMany({
+      include: { track: true },
+    });
 
     const result: FavoriteEntity = {
       artists: new Array<ArtistEntity>(),
@@ -36,27 +42,21 @@ export class FavoritesService {
     };
 
     for (let i = 0; i < favoriteAlbums.length; i++) {
-      const album = await this.prisma.album.findUnique({
-        where: { id: favoriteAlbums[i].albumId },
-      });
+      const album = favoriteAlbums[i].album;
       if (album) {
         result.albums.push(new AlbumEntity(album));
       }
     }
 
     for (let i = 0; i < favoriteArtists.length; i++) {
-      const artist = await this.prisma.artist.findUnique({
-        where: { id: favoriteArtists[i].artistId },
-      });
+      const artist = favoriteArtists[i].artist;
       if (artist) {
         result.artists.push(new ArtistEntity(artist));
       }
     }
 
     for (let i = 0; i < favoriteTracks.length; i++) {
-      const track = await this.prisma.track.findUnique({
-        where: { id: favoriteTracks[i].trackId },
-      });
+      const track = favoriteTracks[i].track;
       if (track) {
         result.tracks.push(new TrackEntity(track));
       }
