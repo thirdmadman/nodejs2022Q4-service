@@ -69,15 +69,18 @@ export class FavoritesService {
     const album = await this.prisma.album.findUnique({
       where: { id },
     });
+
     if (!album) {
       return null;
     }
+
     const link = await this.prisma.favoriteAlbum.create({
       data: {
         userId: null,
         albumId: id,
       },
     });
+
     return link ? { isSuccess: true } : { isSuccess: false };
   }
 
@@ -85,12 +88,15 @@ export class FavoritesService {
     const links = await this.prisma.favoriteAlbum.findMany({
       where: { albumId },
     });
-    if (!links) return null;
+
+    if (!links || links.length === 0) return null;
+
     for (let i = 0; i < links.length; i++) {
       await this.prisma.favoriteAlbum.delete({
         where: { id: links[i].id },
       });
     }
+
     return true;
   }
 
@@ -98,15 +104,18 @@ export class FavoritesService {
     const artist = await this.prisma.artist.findUnique({
       where: { id },
     });
+
     if (!artist) {
       return null;
     }
+
     const link = await this.prisma.favoriteArtist.create({
       data: {
         userId: null,
         artistId: id,
       },
     });
+
     return link ? { isSuccess: true } : { isSuccess: false };
   }
 
@@ -114,10 +123,13 @@ export class FavoritesService {
     const links = await this.prisma.favoriteArtist.findMany({
       where: { artistId },
     });
-    if (!links) return null;
+
+    if (!links || links.length === 0) return null;
+
     for (let i = 0; i < links.length; i++) {
       await this.prisma.favoriteArtist.delete({ where: { id: links[i].id } });
     }
+
     return true;
   }
 
@@ -125,15 +137,18 @@ export class FavoritesService {
     const track = await this.prisma.track.findUnique({
       where: { id },
     });
+
     if (!track) {
       return null;
     }
+
     const link = await this.prisma.favoriteTrack.create({
       data: {
         userId: null,
         trackId: id,
       },
     });
+
     return link ? { isSuccess: true } : { isSuccess: false };
   }
 
@@ -141,11 +156,13 @@ export class FavoritesService {
     const links = await this.prisma.favoriteTrack.findMany({
       where: { trackId: id },
     });
-    if (!links) return null;
+
+    if (!links || links.length === 0) return null;
 
     for (let i = 0; i < links.length; i++) {
       await this.prisma.favoriteTrack.delete({ where: { id: links[i].id } });
     }
+
     return true;
   }
 }
