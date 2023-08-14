@@ -10,12 +10,15 @@ export class AlbumsService {
 
   async create(createAlbumDto: CreateAlbumDto) {
     const album = await this.prisma.album.create({ data: createAlbumDto });
+
     if (!album) return null;
+
     return new AlbumEntity(album);
   }
 
   async findAll() {
     const albums = await this.prisma.album.findMany();
+
     return albums.map((src) => {
       if (!src) return null;
       return new AlbumEntity(src);
@@ -24,13 +27,17 @@ export class AlbumsService {
 
   async findOne(id: string) {
     const album = await this.prisma.album.findUnique({ where: { id } });
+
     if (!album) return null;
+
     return new AlbumEntity(album);
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
     const album = await this.prisma.album.findUnique({ where: { id } });
+
     if (!album) return { entity: null };
+
     const updatedAlbum = await this.prisma.album.update({
       where: { id },
       data: {
@@ -39,16 +46,21 @@ export class AlbumsService {
         year: updateAlbumDto.year,
       },
     });
+
     if (!updatedAlbum) return null;
+
     return { entity: new AlbumEntity(updatedAlbum) };
   }
 
   async remove(id: string) {
     const isAlbum = await this.prisma.album.findUnique({ where: { id } });
+
     if (!isAlbum) return null;
 
     const album = await this.prisma.album.delete({ where: { id } });
+
     if (!album) return null;
+
     return new AlbumEntity(album);
   }
 }

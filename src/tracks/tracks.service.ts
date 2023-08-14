@@ -10,12 +10,15 @@ export class TracksService {
 
   async create(createTrackDto: CreateTrackDto) {
     const track = await this.prisma.track.create({ data: createTrackDto });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 
   async findAll() {
     const tracks = await this.prisma.track.findMany();
+
     return tracks.map((src) => {
       if (!src) return null;
       return new TrackEntity(src);
@@ -24,13 +27,17 @@ export class TracksService {
 
   async findOne(id: string) {
     const track = await this.prisma.track.findUnique({ where: { id } });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto) {
     const track = await this.prisma.track.findUnique({ where: { id } });
+
     if (!track) return { entity: null };
+
     const updatedTrack = await this.prisma.track.update({
       where: { id },
       data: {
@@ -40,15 +47,21 @@ export class TracksService {
         duration: updateTrackDto.duration,
       },
     });
+
     if (!updatedTrack) return null;
+
     return { entity: new TrackEntity(updatedTrack) };
   }
 
   async remove(id: string) {
     const isTrack = await this.prisma.track.findUnique({ where: { id } });
+
     if (!isTrack) return null;
+
     const track = await this.prisma.track.delete({ where: { id } });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 }
