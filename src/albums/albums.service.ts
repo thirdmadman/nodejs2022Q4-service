@@ -47,25 +47,6 @@ export class AlbumsService {
     const isAlbum = await this.prisma.album.findUnique({ where: { id } });
     if (!isAlbum) return null;
 
-    const breakAllLinksTrackToAlbum = async (albumId: string) => {
-      const tracksInAlbum = await this.prisma.album
-        .findUnique({ where: { id: albumId } })
-        .tracks();
-
-      if (tracksInAlbum && tracksInAlbum.length > 0) {
-        for (let i = 0; i < tracksInAlbum.length; i++) {
-          await this.prisma.track.update({
-            where: { id: tracksInAlbum[i].id },
-            data: {
-              albumId: null,
-            },
-          });
-        }
-      }
-    };
-
-    breakAllLinksTrackToAlbum(id);
-
     const album = await this.prisma.album.delete({ where: { id } });
     if (!album) return null;
     return new AlbumEntity(album);

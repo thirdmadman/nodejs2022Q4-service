@@ -46,36 +46,6 @@ export class ArtistsService {
     const isArtist = await this.prisma.artist.findUnique({ where: { id } });
     if (!isArtist) return null;
 
-    const artistsAlbums = await this.prisma.artist
-      .findUnique({ where: { id } })
-      .albums();
-
-    if (artistsAlbums && artistsAlbums.length > 0) {
-      for (let i = 0; i < artistsAlbums.length; i++) {
-        await this.prisma.album.update({
-          where: { id: artistsAlbums[i].id },
-          data: {
-            artistId: null,
-          },
-        });
-      }
-    }
-
-    const artistsTracks = await this.prisma.artist
-      .findUnique({ where: { id } })
-      .tracks();
-
-    if (artistsTracks && artistsTracks.length > 0) {
-      for (let i = 0; i < artistsTracks.length; i++) {
-        await this.prisma.track.update({
-          where: { id: artistsTracks[i].id },
-          data: {
-            artistId: null,
-          },
-        });
-      }
-    }
-
     const artist = await this.prisma.artist.delete({ where: { id } });
     if (!artist) return null;
     return new ArtistEntity(artist);
