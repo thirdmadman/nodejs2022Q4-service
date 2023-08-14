@@ -21,16 +21,19 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  try {
-    const yamlString = stringify(document, {});
-    if (!existsSync('/doc')) {
-      mkdirSync('/doc');
+  if (process.env?.NODE_ENV !== 'production') {
+    try {
+      const yamlString = stringify(document, {});
+      if (!existsSync('/doc')) {
+        mkdirSync('/doc');
+      }
+      const outputPath = resolve(process.cwd(), 'doc/api.yaml');
+      writeFileSync(outputPath, yamlString, { encoding: 'utf8', flag: 'w+' });
+    } catch (e) {
+      console.error(e);
     }
-    const outputPath = resolve(process.cwd(), 'doc/api.yaml');
-    writeFileSync(outputPath, yamlString, { encoding: 'utf8', flag: 'w+' });
-  } catch (e) {
-    console.error(e);
   }
+
   await app.listen(PORT);
 }
 bootstrap();
