@@ -20,13 +20,13 @@ For more information about OpenAPI/Swagger please visit <https://swagger.io/>.
 
 ## Downloading
 
-``` npm cli
+``` cli
 git clone {repository URL}
 ```
 
 ## Installing NPM modules
 
-``` npm cli
+``` cli
 npm install
 ```
 
@@ -46,7 +46,7 @@ Put you connection data in .env file.
 
 Before starting app you will need start
 
-``` npm cli
+``` cli
 npx prisma generate
 npx prisma migrate deploy
 ```
@@ -55,14 +55,14 @@ To generate prisma client and push migration to DB.
 
 You can start the application in dev or prod mode by running
 
-``` npm cli
-npm startstart:dev
+``` cli
+npm run start:dev
 ```
 
 or
 
-``` npm cli
-npm start start:prod
+``` cli
+npm run start:prod
 ```
 
 ## Docker run
@@ -71,16 +71,19 @@ You can run the application in docker containers for development mode and also i
 
 ### Docker run in development mode
 
-To run app by docker in dev mode run this command.
+In between switching production and development mode, it should be used clean up command (this will ensure that that all corresponding containers/volumes are down):
 
-``` npm cli
-docker compose -f docker-compose.dev.yaml down
-docker compose -f docker-compose.dev.yaml up --build --force-recreate
+``` cli
+docker compose -f docker-compose.dev.yaml down --rmi local --volumes
 ```
 
-First command ensures that all corresponding containers are down.
+To run app by docker in dev mode run this command.
 
-Second command will start build and then run containers.
+``` cli
+docker compose -f docker-compose.dev.yaml up --detach --build --force-recreate
+```
+
+This command will start build and then run containers.
 
 Postgres container will start with connection data which is stored in .env file and exposed ports.
 
@@ -94,18 +97,27 @@ After build docker compose will send commends to container:
 
 After container started you are free to edit you app files in src directory in you local machine, docker container will receive all changes and rebuild app.
 
+This command will stop containers:
+
+``` cli
+docker compose -f docker-compose.dev.yaml stop
+```
+
 ### Docker run in production mode
+
+In between switching production and development mode, it should be used clean up command (this will ensure that that all corresponding containers/volumes are down):
+
+``` cli
+docker compose -f docker-compose.yaml down --rmi local --volumes
+```
 
 To run app by docker in production mode run this command.
 
-``` npm cli
-docker compose -f docker-compose.yaml down
-docker compose -f docker-compose.yaml up --build --force-recreate
+``` cli
+docker compose -f docker-compose.yaml up --detach --build --force-recreate
 ```
 
-First command ensures that all corresponding containers are down.
-
-Second command will start build and then run containers.
+This command will start build and then run containers.
 
 Postgres container will start with connection data which is stored in .env file.
 
@@ -123,6 +135,10 @@ After build docker compose will send commends to container:
 
 After container started only app container will be exposed to the world on port used in .env file.
 
+``` cli
+docker compose -f docker-compose.yaml stop
+```
+
 ## Vulnerabilities scanning
 
 You can scan images and npm packages for vulnerabilities with command ```npm run scan:dev``` or ```npm run scan:prod```
@@ -139,35 +155,35 @@ After application running open new terminal and enter:
 
 To run all tests without authorization
 
-``` npm cli
+``` cli
 npm run test
 ```
 
 To run only one of all test suites
 
-``` npm cli
+``` cli
 npm run test -- <path to suite>
 ```
 
 To run all test with authorization
 
-``` npm cli
+``` cli
 npm run test:auth
 ```
 
 To run only specific test suite with authorization
 
-``` npm cli
+``` cli
 npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format
 
-``` npm cli
+``` cli
 npm run lint
 ```
 
-``` npm cli
+``` cli
 npm run format
 ```
 
