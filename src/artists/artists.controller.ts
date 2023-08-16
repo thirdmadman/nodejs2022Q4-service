@@ -22,6 +22,7 @@ import {
   ApiNotFoundResponse,
   ApiParam,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { throwException } from 'src/utils/helpers';
 import { ArtistsService } from './artists.service';
@@ -30,6 +31,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from './entities/artist.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth()
 @ApiTags('Artist')
 @Controller('artist')
 export class ArtistsController {

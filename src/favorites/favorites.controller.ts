@@ -21,11 +21,13 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiUnprocessableEntityResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FavoriteEntity } from './entities/favorite.entity';
 import { FavoritesService } from './favorites.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth()
 @ApiTags('Favorites')
 @Controller('favs')
 export class FavoritesController {
