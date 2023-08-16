@@ -110,11 +110,16 @@ export class AuthService {
       currentTimestamp.getMilliseconds() + refreshTokenAddTime,
     );
 
+    const accessTokenExpiresIn = ms(TOKEN_EXPIRE_TIME);
+    const refreshTokenExpiresIn = ms(TOKEN_REFRESH_EXPIRE_TIME);
+
     return {
       accessToken,
       accessTokenExpiresAt,
+      accessTokenExpiresIn,
       refreshToken,
       refreshTokenExpiresAt,
+      refreshTokenExpiresIn,
     };
   }
 }
