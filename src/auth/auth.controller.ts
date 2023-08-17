@@ -9,12 +9,14 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   NotAcceptableException,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/public.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { throwException } from 'src/utils/helpers';
+import { RefreshDto } from './dto/refresh.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('Auth')
@@ -43,6 +45,14 @@ export class AuthController {
   @Post('login')
   async signIn(@Body() authDTO: AuthDto) {
     const result = await this.authService.signIn(authDTO);
+    return result ?? throwException(new ForbiddenException());
+  }
+
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  async refresh(@Req() req: Request, @Body() refreshDTO: RefreshDto) {
+    const result = await this.authService.refresh(req, refreshDTO);
     return result ?? throwException(new ForbiddenException());
   }
 }

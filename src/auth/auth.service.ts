@@ -5,12 +5,15 @@ import { AuthDto } from './dto/auth.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
   CRYPT_SALT,
+  JWT_SECRET_KEY,
   TOKEN_EXPIRE_TIME,
   TOKEN_REFRESH_EXPIRE_TIME,
 } from 'src/common/config';
 import { hash, compare, genSalt } from 'bcrypt';
 
 import ms, { type StringValue } from 'ms';
+import { RefreshDto } from './dto/refresh.dto';
+import { v4 } from 'uuid';
 @Injectable()
 export class AuthService {
   constructor(
@@ -76,21 +79,74 @@ export class AuthService {
     return await this.getTokens(user.id, user.login);
   }
 
+  async refresh(req: Request, refreshDTO: RefreshDto) {
+    const { refreshToken } = refreshDTO;
+    const payload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: JWT_SECRET_KEY,
+    });
+
+    if (!payload) {
+      return null;
+    }
+
+    if (!req || !req['user']) {
+      return null;
+    }
+
+    if (req['user']['tokenUUID'] !== payload['tokenUUID']) {
+      return null;
+    }
+
+    const newToken = await this.generateAccessToken(
+      req['user']['userId'],
+      req['user']['login'],
+      req['user']['tokenUUID'],
+    );
+
+    const accessTokenAddTime = ms(TOKEN_EXPIRE_TIME as StringValue);
+    const currentTimestamp = new Date().getMilliseconds();
+
+    const accessTokenExpiresAt = new Date().setMilliseconds(
+      currentTimestamp + accessTokenAddTime,
+    );
+
+    const accessTokenExpiresIn = ms(TOKEN_EXPIRE_TIME as StringValue);
+
+    return {
+      accessToken: newToken,
+      accessTokenExpiresAt,
+      accessTokenExpiresIn,
+    };
+  }
+
+  async generateAccessToken(userId: string, login: string, tokenUUID: string) {
+    return await this.jwtService.signAsync(
+      {
+        userId,
+        login,
+        tokenUUID,
+      },
+      {
+        expiresIn: TOKEN_EXPIRE_TIME,
+      },
+    );
+  }
+
   async getTokens(userId: string, login: string) {
-    const [accessToken, refreshToken] = await Promise.all([
+    const tokenUUID = v4();
+
+    const accessToken = await this.generateAccessToken(
+      userId,
+      login,
+      tokenUUID,
+    );
+
+    const refreshToken = await Promise.all([
       this.jwtService.signAsync(
         {
           userId,
           login,
-        },
-        {
-          expiresIn: TOKEN_EXPIRE_TIME,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          userId,
-          login,
+          tokenUUID,
         },
         {
           expiresIn: TOKEN_REFRESH_EXPIRE_TIME,
@@ -101,13 +157,13 @@ export class AuthService {
     const accessTokenAddTime = ms(TOKEN_EXPIRE_TIME as StringValue);
     const refreshTokenAddTime = ms(TOKEN_REFRESH_EXPIRE_TIME as StringValue);
 
-    const currentTimestamp = new Date();
+    const currentTimestamp = new Date().getMilliseconds();
 
     const accessTokenExpiresAt = new Date().setMilliseconds(
-      currentTimestamp.getMilliseconds() + accessTokenAddTime,
+      currentTimestamp + accessTokenAddTime,
     );
     const refreshTokenExpiresAt = new Date().setMilliseconds(
-      currentTimestamp.getMilliseconds() + refreshTokenAddTime,
+      currentTimestamp + refreshTokenAddTime,
     );
 
     const accessTokenExpiresIn = ms(TOKEN_EXPIRE_TIME as StringValue);
