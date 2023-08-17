@@ -9,8 +9,8 @@ import {
   TOKEN_REFRESH_EXPIRE_TIME,
 } from 'src/common/config';
 import { hash, compare, genSalt } from 'bcrypt';
-import ms from 'ms';
 
+import ms, { type StringValue } from 'ms';
 @Injectable()
 export class AuthService {
   constructor(
@@ -98,8 +98,8 @@ export class AuthService {
       ),
     ]);
 
-    const accessTokenAddTime = ms(TOKEN_EXPIRE_TIME);
-    const refreshTokenAddTime = ms(TOKEN_REFRESH_EXPIRE_TIME);
+    const accessTokenAddTime = ms(TOKEN_EXPIRE_TIME as StringValue);
+    const refreshTokenAddTime = ms(TOKEN_REFRESH_EXPIRE_TIME as StringValue);
 
     const currentTimestamp = new Date();
 
@@ -110,8 +110,8 @@ export class AuthService {
       currentTimestamp.getMilliseconds() + refreshTokenAddTime,
     );
 
-    const accessTokenExpiresIn = ms(TOKEN_EXPIRE_TIME);
-    const refreshTokenExpiresIn = ms(TOKEN_REFRESH_EXPIRE_TIME);
+    const accessTokenExpiresIn = ms(TOKEN_EXPIRE_TIME as StringValue);
+    const refreshTokenExpiresIn = ms(TOKEN_REFRESH_EXPIRE_TIME as StringValue);
 
     return {
       accessToken,
