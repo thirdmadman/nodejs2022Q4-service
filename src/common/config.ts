@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { join } from 'path';
 
 config();
 
@@ -10,3 +11,6 @@ export const JWT_SECRET_REFRESH_KEY =
 export const TOKEN_EXPIRE_TIME = process.env.TOKEN_EXPIRE_TIME || '1h';
 export const TOKEN_REFRESH_EXPIRE_TIME =
   process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h';
+export const LOGGING_LEVEL = +(process.env.LOGGING_LEVEL || 5);
+export const LOGGING_DIR =
+  process.env.LOGGING_DIR || join(process.cwd(), '/logs/');
