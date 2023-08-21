@@ -89,18 +89,10 @@ export class AuthService {
       return null;
     }
 
-    if (!req || !req['user']) {
-      return null;
-    }
-
-    if (req['user']['tokenUUID'] !== payload['tokenUUID']) {
-      return null;
-    }
-
     const newToken = await this.generateAccessToken(
-      req['user']['userId'],
-      req['user']['login'],
-      req['user']['tokenUUID'],
+      payload['userId'],
+      payload['login'],
+      payload['tokenUUID'],
     );
 
     const accessTokenAddTime = ms(TOKEN_EXPIRE_TIME as StringValue);
