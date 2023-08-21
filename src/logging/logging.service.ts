@@ -1,4 +1,5 @@
 import { LoggerService } from '@nestjs/common';
+import { FileWriter } from './filewriter';
 
 export const LogLevels = {
   none: 0,
@@ -12,13 +13,25 @@ export const LogLevels = {
 export class LoggingService implements LoggerService {
   private logLevel = 5;
 
+  private fileWriter = new FileWriter();
+
+  writeLog(data: string) {
+    console.log(data);
+    this.fileWriter.writeLog(data);
+  }
+
+  writeError(data: string) {
+    console.error(data);
+    this.fileWriter.writeLog(data);
+  }
+
   /**
    * Write an 'error' level log.
    */
   error(message: string, context?: string) {
     if (this.logLevel < 1) return null;
 
-    console.log(`ERROR [${context}] ${message}`);
+    this.writeError(`ERROR [${context}] ${message}`);
   }
 
   /**
@@ -26,7 +39,7 @@ export class LoggingService implements LoggerService {
    */
   warn(message: string, context?: string) {
     if (this.logLevel < 2) return null;
-    console.log(`WARN [${context}] ${message}`);
+    this.writeLog(`WARN [${context}] ${message}`);
   }
 
   /**
@@ -35,7 +48,7 @@ export class LoggingService implements LoggerService {
   log(message: any, context?: string) {
     if (this.logLevel < 3) return null;
 
-    console.log(`LOG [${context}] ${message}`);
+    this.writeLog(`LOG [${context}] ${message}`);
   }
 
   /**
@@ -44,7 +57,7 @@ export class LoggingService implements LoggerService {
   debug?(message: string, context?: string) {
     if (this.logLevel < 4) return null;
 
-    console.log(`DEBUG [${context}] ${message}`);
+    this.writeLog(`DEBUG [${context}] ${message}`);
   }
 
   /**
@@ -53,10 +66,14 @@ export class LoggingService implements LoggerService {
   verbose?(message: string, context?: string) {
     if (this.logLevel < 5) return null;
 
-    console.log(`VERBOSE [${context}] ${message}`);
+    this.writeLog(`VERBOSE [${context}] ${message}`);
   }
 
   setLogLevel(logLevel: number) {
     this.logLevel = logLevel;
+  }
+
+  setLogsPath(path: string) {
+    this.fileWriter.setPath(path);
   }
 }
