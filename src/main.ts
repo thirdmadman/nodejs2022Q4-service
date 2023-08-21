@@ -2,13 +2,15 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { PORT } from './common/config';
+import { LOGGING_DIR, LOGGING_LEVEL, PORT } from './common/config';
 import { stringify } from 'yaml';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { LoggingService } from './logging/logging.service';
 
 const logger = new LoggingService();
+logger.setLogLevel(LOGGING_LEVEL);
+logger.setLogsPath(LOGGING_DIR);
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error(
