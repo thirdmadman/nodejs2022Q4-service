@@ -68,4 +68,8 @@ export class FileWriter {
   async writeLog(data: string) {
     return this.writeToFile('/log.txt', data);
   }
+
+  async writeError(data: string) {
+    return this.writeToFile('/error.txt', data);
+  }
 }

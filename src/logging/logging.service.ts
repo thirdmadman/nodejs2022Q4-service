@@ -22,7 +22,7 @@ export class LoggingService implements LoggerService {
 
   writeError(data: string) {
     console.error(data);
-    this.fileWriter.writeLog(data);
+    this.fileWriter.writeError(data);
   }
 
   /**
