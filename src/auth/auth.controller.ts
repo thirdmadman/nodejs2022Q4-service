@@ -14,7 +14,7 @@ import {
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { Public } from 'src/decorators/public.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { throwException } from 'src/utils/helpers';
 import { RefreshDto } from './dto/refresh.dto';
 
@@ -48,7 +48,7 @@ export class AuthController {
     return result ?? throwException(new ForbiddenException());
   }
 
-  @ApiBearerAuth()
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(@Req() req: Request, @Body() refreshDTO: RefreshDto) {
