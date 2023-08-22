@@ -1,0 +1,5 @@
+node_modules
+.vscode
+.docker
+docker-compose*
+.git

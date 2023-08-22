@@ -1,8 +1,8 @@
-import { Favorite } from 'src/interfaces/favorite.interface';
-import { Album } from 'src/interfaces/album.interface';
-import { Artist } from 'src/interfaces/artist.interface';
-import { Track } from 'src/interfaces/track.interface';
-import { User } from 'src/interfaces/user.interface';
+import { Favorite } from 'src/db/interfaces/favorite.interface';
+import { Album } from 'src/db/interfaces/album.interface';
+import { Artist } from 'src/db/interfaces/artist.interface';
+import { Track } from 'src/db/interfaces/track.interface';
+import { User } from 'src/db/interfaces/user.interface';
 
 export interface DB {
   user: Array<User>;

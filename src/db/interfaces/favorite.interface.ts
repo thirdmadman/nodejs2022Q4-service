@@ -1,4 +1,4 @@
-import { GenericEntity } from 'src/generics/generic.entity';
+import { GenericEntity } from 'src/db/generics/generic.entity';
 
 export interface Favorite extends GenericEntity {
   userId: string | null;

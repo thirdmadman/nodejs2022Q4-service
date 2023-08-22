@@ -1,52 +1,65 @@
-import { albumRepository } from './../albums/album.repository';
-import { artistRepository } from './artist.repository';
 import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ArtistEntity } from './entities/artist.entity';
-import { trackRepository } from 'src/tracks/track.repository';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class ArtistsService {
-  create(createArtistDto: CreateArtistDto) {
-    const artist = artistRepository.create({
-      ...createArtistDto,
-      id: '',
-    });
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createArtistDto: CreateArtistDto) {
+    const artist = await this.prisma.artist.create({ data: createArtistDto });
+
     if (!artist) return null;
+
     return new ArtistEntity(artist);
   }
 
-  findAll() {
-    return artistRepository.findAll().map((src) => {
+  async findAll() {
+    const artists = await this.prisma.artist.findMany();
+
+    return artists.map((src) => {
       if (!src) return null;
       return new ArtistEntity(src);
     });
   }
 
-  findOne(id: string) {
-    const artist = artistRepository.findOne(id);
+  async findOne(id: string) {
+    const artist = await this.prisma.artist.findUnique({ where: { id } });
+
     if (!artist) return null;
+
     return new ArtistEntity(artist);
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    const artist = artistRepository.findOne(id);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = await this.prisma.artist.findUnique({ where: { id } });
+
     if (!artist) return { entity: null };
-    const updatedUser = artistRepository.update(id, {
-      ...artist,
-      grammy: updateArtistDto.grammy,
-      name: updateArtistDto.name,
+
+    const updatedUser = await this.prisma.artist.update({
+      where: { id },
+      data: {
+        grammy: updateArtistDto.grammy,
+        name: updateArtistDto.name,
+      },
     });
+
     if (!updatedUser) return null;
+
     return { entity: new ArtistEntity(updatedUser) };
   }
 
-  remove(id: string) {
-    trackRepository.breakAllLinksTrackToArtist(id);
-    albumRepository.breakAllLinksArtistToAlbum(id);
-    const artist = artistRepository.delete(id);
+  async remove(id: string) {
+    const isArtist = await this.prisma.artist.findUnique({ where: { id } });
+
+    if (!isArtist) return null;
+
+    const artist = await this.prisma.artist.delete({ where: { id } });
+
     if (!artist) return null;
+
     return new ArtistEntity(artist);
   }
 }

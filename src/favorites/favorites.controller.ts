@@ -40,7 +40,7 @@ export class FavoritesController {
     type: [FavoriteEntity],
   })
   @Get()
-  findAll() {
+  async findAll() {
     return this.favoritesService.findAll();
   }
 
@@ -57,8 +57,8 @@ export class FavoritesController {
     description: 'Track already exists in favorites or could not be added',
   })
   @Post('/track/:id')
-  createFavoriteTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.createFavoriteTrack(id);
+  async createFavoriteTrack(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.createFavoriteTrack(id);
     if (!result) throw new UnprocessableEntityException();
     if (!result.isSuccess) throw new InternalServerErrorException();
     return result;
@@ -75,8 +75,8 @@ export class FavoritesController {
   @ApiNotFoundResponse({ description: 'Track was not found' })
   @Delete('/track/:id')
   @HttpCode(204)
-  removeFavoriteTrack(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeFavoriteTrack(id);
+  async removeFavoriteTrack(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeFavoriteTrack(id);
     if (result === null) throw new NotFoundException();
     if (!result) throw new InternalServerErrorException();
     return result;
@@ -95,8 +95,8 @@ export class FavoritesController {
     description: 'Album already exists in favorites or could not be added',
   })
   @Post('/album/:id')
-  createFavoriteAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.createFavoriteAlbum(id);
+  async createFavoriteAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.createFavoriteAlbum(id);
     if (!result) throw new UnprocessableEntityException();
     if (!result.isSuccess) throw new InternalServerErrorException();
     return result;
@@ -113,8 +113,8 @@ export class FavoritesController {
   @ApiNotFoundResponse({ description: 'Album was not found' })
   @Delete('/album/:id')
   @HttpCode(204)
-  removeFavoriteAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeFavoriteAlbum(id);
+  async removeFavoriteAlbum(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeFavoriteAlbum(id);
     if (result === null) throw new NotFoundException();
     if (!result) throw new InternalServerErrorException();
     return result;
@@ -133,8 +133,8 @@ export class FavoritesController {
     description: 'Artist already exists in favorites or could not be added',
   })
   @Post('/artist/:id')
-  createFavoriteArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.createFavoriteArtist(id);
+  async createFavoriteArtist(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.createFavoriteArtist(id);
     if (!result) throw new UnprocessableEntityException();
     if (!result.isSuccess) throw new InternalServerErrorException();
     return result;
@@ -150,8 +150,8 @@ export class FavoritesController {
   @ApiNotFoundResponse({ description: 'Artist was not found' })
   @Delete('/artist/:id')
   @HttpCode(204)
-  removeFavoriteArtist(@Param('id', ParseUUIDPipe) id: string) {
-    const result = this.favoritesService.removeFavoriteArtist(id);
+  async removeFavoriteArtist(@Param('id', ParseUUIDPipe) id: string) {
+    const result = await this.favoritesService.removeFavoriteArtist(id);
     if (result === null) throw new NotFoundException();
     if (!result) throw new InternalServerErrorException();
     return result;

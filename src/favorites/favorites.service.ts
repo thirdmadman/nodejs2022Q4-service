@@ -1,19 +1,39 @@
-import { artistRepository } from './../artists/artist.repository';
-import { favoriteRepository } from './favorite.repository';
 import { Injectable } from '@nestjs/common';
 import { ArtistEntity } from 'src/artists/entities/artist.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
 import { TrackEntity } from 'src/tracks/entities/track.entity';
 import { FavoriteEntity } from './entities/favorite.entity';
-import { trackRepository } from 'src/tracks/track.repository';
-import { albumRepository } from 'src/albums/album.repository';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class FavoritesService {
-  findAll() {
-    const favoritesSource = favoriteRepository.findAll();
+  // prisma = new PrismaClient({
+  //   log: [
+  //     {
+  //       emit: 'event',
+  //       level: 'query',
+  //     },
+  //   ],
+  // });
 
-    if (!favoritesSource) return null;
+  constructor(private readonly prisma: PrismaService) {}
+
+  // constructor() {
+  //   this.prisma.$on('query', async (e) => {
+  //     console.log(`${e.query} ${e.params}`);
+  //   });
+  // }
+
+  async findAll() {
+    const favoriteAlbums = await this.prisma.favoriteAlbum.findMany({
+      include: { album: true },
+    });
+    const favoriteArtists = await this.prisma.favoriteArtist.findMany({
+      include: { artist: true },
+    });
+    const favoriteTracks = await this.prisma.favoriteTrack.findMany({
+      include: { track: true },
+    });
 
     const result: FavoriteEntity = {
       artists: new Array<ArtistEntity>(),
@@ -21,104 +41,128 @@ export class FavoritesService {
       tracks: new Array<TrackEntity>(),
     };
 
-    if (favoritesSource.length === 0) {
-      return result;
+    for (let i = 0; i < favoriteAlbums.length; i++) {
+      const album = favoriteAlbums[i].album;
+      if (album) {
+        result.albums.push(new AlbumEntity(album));
+      }
     }
 
-    for (let i = 0; i < favoritesSource.length; i++) {
-      const source = favoritesSource[i];
-      if (source.artistId !== null) {
-        const artist = artistRepository.findOne(source.artistId);
-        if (artist) {
-          result.artists.push(new ArtistEntity(artist));
-        }
-        continue;
+    for (let i = 0; i < favoriteArtists.length; i++) {
+      const artist = favoriteArtists[i].artist;
+      if (artist) {
+        result.artists.push(new ArtistEntity(artist));
       }
-      if (source.albumId !== null) {
-        const album = albumRepository.findOne(source.albumId);
-        if (album) {
-          result.albums.push(new AlbumEntity(album));
-        }
-        continue;
-      }
-      if (source.trackId !== null) {
-        const track = trackRepository.findOne(source.trackId);
-        if (track) {
-          result.tracks.push(new TrackEntity(track));
-        }
-        continue;
+    }
+
+    for (let i = 0; i < favoriteTracks.length; i++) {
+      const track = favoriteTracks[i].track;
+      if (track) {
+        result.tracks.push(new TrackEntity(track));
       }
     }
 
     return result;
   }
 
-  createFavoriteTrack(id: string) {
-    const track = trackRepository.findOne(id);
-    if (!track) {
-      return null;
-    }
-    const link = favoriteRepository.create({
-      id: '',
-      userId: null,
-      albumId: null,
-      artistId: null,
-      trackId: id,
+  async createFavoriteAlbum(id: string) {
+    const album = await this.prisma.album.findUnique({
+      where: { id },
     });
-    return link ? { isSuccess: true } : { isSuccess: false };
-  }
 
-  removeFavoriteTrack(id: string) {
-    const links = favoriteRepository.findAllWhere({ trackId: id });
-    if (!links) return null;
-
-    links.forEach((link) => favoriteRepository.delete(link.id));
-    return true;
-  }
-
-  createFavoriteAlbum(id: string) {
-    const album = albumRepository.findOne(id);
     if (!album) {
       return null;
     }
-    const link = favoriteRepository.create({
-      id: '',
-      userId: null,
-      albumId: id,
-      artistId: null,
-      trackId: null,
+
+    const link = await this.prisma.favoriteAlbum.create({
+      data: {
+        userId: null,
+        albumId: id,
+      },
     });
+
     return link ? { isSuccess: true } : { isSuccess: false };
   }
 
-  removeFavoriteAlbum(id: string) {
-    const links = favoriteRepository.findAllWhere({ albumId: id });
-    if (!links) return null;
+  async removeFavoriteAlbum(albumId: string) {
+    const links = await this.prisma.favoriteAlbum.findMany({
+      where: { albumId },
+    });
 
-    links.forEach((link) => favoriteRepository.delete(link.id));
+    if (!links || links.length === 0) return null;
+
+    for (let i = 0; i < links.length; i++) {
+      await this.prisma.favoriteAlbum.delete({
+        where: { id: links[i].id },
+      });
+    }
+
     return true;
   }
 
-  createFavoriteArtist(id: string) {
-    const artist = artistRepository.findOne(id);
+  async createFavoriteArtist(id: string) {
+    const artist = await this.prisma.artist.findUnique({
+      where: { id },
+    });
+
     if (!artist) {
       return null;
     }
-    const link = favoriteRepository.create({
-      id: '',
-      userId: null,
-      albumId: null,
-      artistId: id,
-      trackId: null,
+
+    const link = await this.prisma.favoriteArtist.create({
+      data: {
+        userId: null,
+        artistId: id,
+      },
     });
+
     return link ? { isSuccess: true } : { isSuccess: false };
   }
 
-  removeFavoriteArtist(id: string) {
-    const links = favoriteRepository.findAllWhere({ artistId: id });
-    if (!links) return null;
+  async removeFavoriteArtist(artistId: string) {
+    const links = await this.prisma.favoriteArtist.findMany({
+      where: { artistId },
+    });
 
-    links.forEach((link) => favoriteRepository.delete(link.id));
+    if (!links || links.length === 0) return null;
+
+    for (let i = 0; i < links.length; i++) {
+      await this.prisma.favoriteArtist.delete({ where: { id: links[i].id } });
+    }
+
+    return true;
+  }
+
+  async createFavoriteTrack(id: string) {
+    const track = await this.prisma.track.findUnique({
+      where: { id },
+    });
+
+    if (!track) {
+      return null;
+    }
+
+    const link = await this.prisma.favoriteTrack.create({
+      data: {
+        userId: null,
+        trackId: id,
+      },
+    });
+
+    return link ? { isSuccess: true } : { isSuccess: false };
+  }
+
+  async removeFavoriteTrack(id: string) {
+    const links = await this.prisma.favoriteTrack.findMany({
+      where: { trackId: id },
+    });
+
+    if (!links || links.length === 0) return null;
+
+    for (let i = 0; i < links.length; i++) {
+      await this.prisma.favoriteTrack.delete({ where: { id: links[i].id } });
+    }
+
     return true;
   }
 }

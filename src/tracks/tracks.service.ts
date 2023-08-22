@@ -1,55 +1,67 @@
-import { trackRepository } from './track.repository';
 import { Injectable } from '@nestjs/common';
-import { Track } from 'src/interfaces/track.interface';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { TrackEntity } from './entities/track.entity';
+import { PrismaService } from 'src/db/prisma.service';
 
 @Injectable()
 export class TracksService {
-  create(createTrackDto: CreateTrackDto) {
-    const newTrack: Track = {
-      id: '',
-      name: createTrackDto.name,
-      artistId: createTrackDto.artistId,
-      albumId: createTrackDto.albumId,
-      duration: createTrackDto.duration,
-    };
-    const track = trackRepository.create(newTrack);
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createTrackDto: CreateTrackDto) {
+    const track = await this.prisma.track.create({ data: createTrackDto });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 
-  findAll() {
-    return trackRepository.findAll().map((src) => {
+  async findAll() {
+    const tracks = await this.prisma.track.findMany();
+
+    return tracks.map((src) => {
       if (!src) return null;
       return new TrackEntity(src);
     });
   }
 
-  findOne(id: string) {
-    const track = trackRepository.findOne(id);
+  async findOne(id: string) {
+    const track = await this.prisma.track.findUnique({ where: { id } });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    const track = trackRepository.findOne(id);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const track = await this.prisma.track.findUnique({ where: { id } });
+
     if (!track) return { entity: null };
-    const updatedTrack = trackRepository.update(id, {
-      ...track,
-      name: updateTrackDto.name,
-      albumId: updateTrackDto.albumId,
-      artistId: updateTrackDto.artistId,
-      duration: updateTrackDto.duration,
+
+    const updatedTrack = await this.prisma.track.update({
+      where: { id },
+      data: {
+        name: updateTrackDto.name,
+        albumId: updateTrackDto.albumId,
+        artistId: updateTrackDto.artistId,
+        duration: updateTrackDto.duration,
+      },
     });
+
     if (!updatedTrack) return null;
+
     return { entity: new TrackEntity(updatedTrack) };
   }
 
-  remove(id: string) {
-    const track = trackRepository.delete(id);
+  async remove(id: string) {
+    const isTrack = await this.prisma.track.findUnique({ where: { id } });
+
+    if (!isTrack) return null;
+
+    const track = await this.prisma.track.delete({ where: { id } });
+
     if (!track) return null;
+
     return new TrackEntity(track);
   }
 }

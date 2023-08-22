@@ -57,7 +57,7 @@ export class AlbumsController {
     type: [AlbumEntity],
   })
   @Get()
-  findAll() {
+  async findAll() {
     return this.albumsService.findAll();
   }
 
@@ -77,10 +77,9 @@ export class AlbumsController {
     format: 'uuid',
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.albumsService.findOne(id) ?? throwException(new NotFoundException())
-    );
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.albumsService.findOne(id);
+    return entity ?? throwException(new NotFoundException());
   }
 
   @ApiOperation({
@@ -102,11 +101,11 @@ export class AlbumsController {
     format: 'uuid',
   })
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    const resultObj = this.albumsService.update(id, updateAlbumDto);
+    const resultObj = await this.albumsService.update(id, updateAlbumDto);
     if (!resultObj) {
       throw new InternalServerErrorException();
     }
@@ -134,9 +133,8 @@ export class AlbumsController {
   })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return (
-      this.albumsService.remove(id) ?? throwException(new NotFoundException())
-    );
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    const entity = await this.albumsService.remove(id);
+    return entity ?? throwException(new NotFoundException());
   }
 }

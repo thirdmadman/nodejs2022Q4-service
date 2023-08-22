@@ -4,6 +4,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { TracksModule } from './tracks/tracks.module';
 import { UsersModule } from './users/users.module';
+import { PrismaService } from './db/prisma.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { UsersModule } from './users/users.module';
     UsersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [PrismaService],
 })
 export class AppModule {}
