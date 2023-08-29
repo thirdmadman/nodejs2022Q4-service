@@ -24,6 +24,7 @@ import {
   ApiParam,
   ApiForbiddenResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,6 +33,7 @@ import { throwException } from 'src/utils/helpers';
 import { UserEntity } from './entities/user.entity';
 
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth()
 @ApiTags('Users')
 @Controller('user')
 export class UsersController {
