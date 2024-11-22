@@ -14,4 +14,5 @@ COPY --chown=node:node --from=build /usr/app/dist ./dist
 COPY --chown=node:node --from=build /usr/app/prisma ./prisma
 ENV NODE_ENV=production
 RUN npm prune --production
-USER node
+RUN chmod 750 /usr/app
+RUN echo "node" > /etc/group && echo "node" > /etc/sudoers
